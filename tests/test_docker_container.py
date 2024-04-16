@@ -1,7 +1,9 @@
 import pytest
 
+from general.test_base import TestBase
 
-@pytest.mark.usefixtures("docker_fixture")
-def test_docker_container():
-    # Your test code here
-    pass
+
+class TestDocker(TestBase):
+    def test_docker_container(self):
+        # Your test code here
+        pass

@@ -1,4 +1,7 @@
+import pytest
 
+
+@pytest.mark.usefixtures("docker_fixture")
 class TestBase:
 
     @staticmethod
