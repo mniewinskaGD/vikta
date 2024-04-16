@@ -1,10 +1,8 @@
 import pytest
 import requests
-
+from general.config import BASE_ENDPOINT
 from general.test_base import TestBase
 from tests.test_data.test_data_user_api_controller import TestDataUserAPIController
-
-BASE_ENDPOINT = "http://localhost:5054"
 
 
 class TestUserAPIController(TestBase):

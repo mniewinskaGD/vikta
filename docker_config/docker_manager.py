@@ -1,6 +1,8 @@
 import docker
 import threading
 
+from general.config import DOCKER_IMAGE_NAME, DOCKER_CONTAINER_NAME
+
 
 class DockerManager:
     _instance = None
@@ -11,36 +13,20 @@ class DockerManager:
             if not cls._instance:
                 cls._instance = super().__new__(cls)
                 cls._instance.client = docker.from_env()
-                cls._instance.container_name = "vikta"
+                cls._instance.container_name = DOCKER_CONTAINER_NAME
         return cls._instance
 
-    def check_container_existence(self):
-        containers = self.client.containers.list(filters={"name": self.container_name})
-        return len(containers) > 0
-
-    def check_container_running(self):
-        containers = self.client.containers.list(filters={"name": self.container_name})
+    def start_container(self):
+        containers = self.get_containers()
         if containers:
             container = containers[0]
-            return container.status == "running"
-        return False
-
-    def create_container(self):
-        if not self.check_container_existence():
-            print("Creating Docker container...")
-            self.client.containers.run("your_image_name", detach=True, name=self.container_name)
-        else:
-            print("Docker container already exists.")
-
-    def start_container(self):
-        if not self.check_container_running():
-            print("Starting Docker container...")
-            containers = self.client.containers.list(filters={"name": self.container_name})
-            if containers:
-                container = containers[0]
+            if self.check_container_running(container):
+                print("Docker container is already running.")
+            else:
+                print("Starting Docker container...")
                 container.start()
         else:
-            print("Docker container is already running.")
+            self.create_container()
 
     def stop_container(self):
         containers = self.client.containers.list(filters={"name": self.container_name})
@@ -50,5 +36,17 @@ class DockerManager:
             container.stop()
         else:
             print("Docker container is not running.")
+
+    def get_containers(self):
+        containers = self.client.containers.list(all=True, filters={"name": self.container_name})
+        return containers
+
+    def check_container_running(self, container):
+        return container.status == "running"
+
+    def create_container(self):
+        print("Creating Docker container...")
+        self.client.containers.run(DOCKER_IMAGE_NAME, detach=True, name=self.container_name)
+
 
 
