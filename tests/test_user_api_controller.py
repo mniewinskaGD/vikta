@@ -34,7 +34,7 @@ class TestUserAPIController(TestBase):
         assert get_user_data["surname"] == payload["surname"]
         assert get_user_data["pathToAvatarImage"] == payload["pathToAvatarImage"]
 
-    @pytest.mark.skip
+    @pytest.mark.skip("500 error")
     def test_update_user(self):
         payload = TestDataUserAPIController.updated_user_put
 
