@@ -1,45 +1,29 @@
+import uuid
+
+
 class TestDataUserAPIController:
     base_user_create = {
-        "addressIds": [
-            0
-        ],
-        "email": "a@a",
-        "firstName": "a",
-        "id": 0,
-        "loginName": "a",
-        "middleName": "a",
-        "password": "123",
-        "pathToAvatarImage": "string",
-        "paymentCardIds": [
-            0
-        ],
-        "surname": "a"
-    }
-    base_user_get = {
-        "id": 63,
-        "loginName": "a",
-        "password": "123",
-        "email": "a@a",
-        "firstName": "a",
-        "middleName": "a",
-        "surname": "a",
-        "pathToAvatarImage": "http://lorempixel.com/640/480/transport/",
         "addressIds": [],
-        "paymentCardIds": []
+        "email": f"email_{uuid.uuid4().hex}@a.com",
+        "firstName": f"firstName_{uuid.uuid4().hex}",
+        "id": 1,
+        "loginName": f"loginName_{uuid.uuid4().hex}",
+        "middleName": f"middleName_{uuid.uuid4().hex}",
+        "password": f"{uuid.uuid4().hex}",
+        "pathToAvatarImage": "",
+        "paymentCardIds": [],
+        "surname": f"surname_{uuid.uuid4().hex}"
     }
+
     updated_user_put = {
-        "addressIds": [
-            0
-        ],
+        "addressIds": [],
         "email": "b@b",
         "firstName": "b",
         "id": 64,
         "loginName": "b",
         "middleName": "b",
         "password": "456",
-        "pathToAvatarImage": "http://lorempixel.com/640/480/transport/",
-        "paymentCardIds": [
-            0
-        ],
+        "pathToAvatarImage": "https://5.imimg.com/data5/PM/TV/MY-44554651/baloon-decoration-500x500.jpg",
+        "paymentCardIds": [],
         "surname": "b"
     }
