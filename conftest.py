@@ -1,5 +1,7 @@
+import time
 import pytest
-
+import requests
+from general.config import BASE_ENDPOINT
 from docker_config.docker_manager import DockerManager
 
 
@@ -7,6 +9,7 @@ from docker_config.docker_manager import DockerManager
 def docker_fixture():
     docker_manager = DockerManager()
     docker_manager.start_container()
+    time.sleep(5)
     yield docker_manager
     docker_manager.stop_container()
 
@@ -30,3 +33,14 @@ def pytest_runtest_makereport(item):
         report.test_title = text.format(**params)
 
 
+@pytest.fixture(scope="session")
+def backend_is_responsive():
+    retry_count = 3
+    for _ in range(retry_count):
+        response = requests.get(BASE_ENDPOINT)
+        if response.status_code == 200:
+            break
+        else:
+            time.sleep(2)
+    else:
+        assert False, f"Page did not return 200 after {retry_count} retries"
