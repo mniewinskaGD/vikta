@@ -9,6 +9,7 @@ def create_and_delete_test_user(create_test_user):
     data, user_id = create_test_user
     yield data, user_id
     requests.delete(TestUserAPIController.user_endpoint, params=f"id={user_id}")
+    print(f"Delete test user\n user id:{user_id}")
 
 
 @pytest.fixture
@@ -17,4 +18,5 @@ def create_test_user():
     create_user_response = requests.post(TestUserAPIController.user_endpoint, json=payload)
     data = create_user_response.json()
     user_id = data["id"]
+    print(f"Create test user\n user id:{user_id}")
     yield data, user_id
