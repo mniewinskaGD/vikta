@@ -7,6 +7,7 @@ from general.config import BASE_ENDPOINT
 
 @pytest.mark.usefixtures("docker_fixture")
 class TestPageResponse:
+    @pytest.mark.smoke
     @pytest.mark.parametrize("retry_count", [3, 5, 8])
     def test_page_response(self, retry_count):
         for _ in range(retry_count):

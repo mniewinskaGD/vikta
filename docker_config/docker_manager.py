@@ -1,3 +1,5 @@
+import time
+
 import docker
 import threading
 
@@ -25,6 +27,7 @@ class DockerManager:
             else:
                 print("Starting Docker container...")
                 container.start()
+                time.sleep(30)
         else:
             self.create_container()
 
@@ -47,6 +50,7 @@ class DockerManager:
     def create_container(self):
         print("Creating Docker container...")
         self.client.containers.run(DOCKER_IMAGE_NAME, detach=True, name=self.container_name)
+        time.sleep(30)
 
 
 
