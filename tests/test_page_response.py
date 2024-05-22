@@ -13,6 +13,7 @@ class TestPageResponse:
         for _ in range(retry_count):
             response = requests.get(BASE_ENDPOINT)
             if response.status_code == 200:
+                print("Page responded 200 OK")
                 break
             else:
                 time.sleep(2)

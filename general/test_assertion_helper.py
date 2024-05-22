@@ -1,8 +1,8 @@
-
 class TestAssertionHelper:
 
     @staticmethod
     def assert_user_api_controller_data(expected_data, observed_data):
+        print("Compare all fields of user API controller data")
         assert expected_data["email"] == observed_data["email"]
         assert expected_data["addressIds"] == observed_data["addressIds"]
         assert expected_data["firstName"] == observed_data["firstName"]
@@ -11,8 +11,10 @@ class TestAssertionHelper:
         assert expected_data["password"] == observed_data["password"]
         assert expected_data["paymentCardIds"] == observed_data["paymentCardIds"]
         assert expected_data["surname"] == observed_data["surname"]
+
     @staticmethod
     def assert_payment_card_api_controller_data(expected_data, observed_data):
+        print("Compare all fields of payment card API controller data")
         assert expected_data["cardNickName"] == observed_data["cardNickName"]
         assert expected_data["cardNumber"] == observed_data["cardNumber"]
         assert expected_data["cardCode"] == observed_data["cardCode"]
