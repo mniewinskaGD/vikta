@@ -1,17 +1,22 @@
 import time
+
 import pytest
 import requests
 from general.config import BASE_ENDPOINT
 from docker_config.docker_manager import DockerManager
 
 
+def pytest_addoption(parser):
+    parser.addoption('--stop_docker_container', action='store', default=False)
+
+
 @pytest.fixture(scope='session')
-def docker_fixture():
+def docker_fixture(request):
     docker_manager = DockerManager()
     docker_manager.start_container()
-    time.sleep(5)
     yield docker_manager
-    docker_manager.stop_container()
+    if request.config.option.stop_docker_container:
+        docker_manager.stop_container()
 
 
 @pytest.hookimpl(hookwrapper=True)
