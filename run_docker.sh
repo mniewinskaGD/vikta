@@ -17,7 +17,7 @@ container_dir=/vikta
 
 docker run \
   -it \
-  -p 8080:8080 \
+  -p 6060:6060 \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v "$host_dir":"$container_dir" \
   -w "$container_dir" \

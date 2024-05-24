@@ -8,6 +8,8 @@ from docker_config.docker_manager import DockerManager
 
 def pytest_addoption(parser):
     parser.addoption('--stop_docker_container', action='store', default=False)
+    parser.addoption("--test_report", action="store", default=None,
+                     help="Generate HTML report and store it in the specified file")
 
 
 @pytest.fixture(scope='session')
@@ -49,3 +51,10 @@ def backend_is_responsive():
             time.sleep(2)
     else:
         assert False, f"Page did not return 200 after {retry_count} retries"
+
+
+def pytest_configure(config):
+    test_report = config.getoption("--test_report")
+    if test_report:
+        config.option.htmlpath = test_report
+        config.option.self_contained_html = True
