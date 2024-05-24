@@ -1,31 +1,42 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_IMAGE = 'vikta-framework:latest'
-    }
-
     stages {
-        stage('Checkout') {
+        stage('Start') {
             steps {
-                git branch: 'main', url: 'https://github.com/mniewinskaGD/vikta.git'
+                echo "*****************Starting running tests****************"
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Environment Info') {
             steps {
                 script {
-                    docker.build("$DOCKER_IMAGE")
+                    sh 'whoami'
+                    sh 'pwd'
+                }
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    sh 'which python3'
+                    sh 'pip3 install -r requirements.txt'
                 }
             }
         }
 
         stage('Run Tests') {
             steps {
+                echo "********************Running tests*********"
+                sh 'python3 -m pytest --html=reports/report.html --self-contained-html -m "smoke"'
+            }
+        }
+
+        stage('Finish') {
+            steps {
                 script {
-                    docker.image("$DOCKER_IMAGE").inside {
-                        sh 'pytest --html=reports/report.html --self-contained-html -m"smoke"'
-                    }
+                    sh 'date'
                 }
             }
         }
