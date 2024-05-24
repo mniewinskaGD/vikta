@@ -6,6 +6,7 @@ __pycache__/
 
 # Test reports
 test_results/
+*.html
 
 # C extensions
 *.so

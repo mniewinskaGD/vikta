@@ -13,5 +13,8 @@ COPY requirements.txt /requirements.txt
 # Install any dependencies
 RUN pip install -r /requirements.txt
 
+# Copy pytest configuration
+COPY pytest.ini /pytest.ini
+
 # Run the application.
 CMD /bin/bash
