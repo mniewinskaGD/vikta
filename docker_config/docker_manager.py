@@ -5,10 +5,14 @@ import threading
 
 from general.config import DOCKER_IMAGE_NAME, DOCKER_CONTAINER_NAME
 
+"""
+the Singleton pattern is used to ensure that only one instance of the DockerManager class is created
+"""
+
 
 class DockerManager:
-    _instance = None
-    _lock = threading.Lock()
+    _instance = None  # to store the single instance of the class
+    _lock = threading.Lock()  # to ensure that the instance creation is thread-safe
 
     def __new__(cls):
         with cls._lock:
@@ -51,6 +55,3 @@ class DockerManager:
         print("Creating Docker container...")
         self.client.containers.run(DOCKER_IMAGE_NAME, detach=True, name=self.container_name)
         time.sleep(30)
-
-
-

@@ -11,27 +11,47 @@ class TestPaymentCardAPIController(TestBase, TestAssertionHelper):
     payment_card_list_endpoint = payment_card_endpoint + '/list'
     payment_card_search_endpoint = payment_card_endpoint + '/search'
 
-    def test_get_user_payment_card_by_id(self):
-        get_card_response, get_card_data = self.verify_response_code(requests.get(self.payment_card_endpoint, params="id=48"), 200)
-        self.assert_payment_card_api_controller_data(TestDataPaymentCardApiController.existing_payment_card_record, get_card_data)
+    @pytest.mark.usefixtures("create_and_delete_test_payment")
+    def test_get_user_payment_card_by_id(self, create_and_delete_test_payment):
+        created_payment_data, created_payment_id = create_and_delete_test_payment
+        get_card_response, get_card_data = self.verify_response_code(
+            requests.get(self.payment_card_endpoint, params=f"id={created_payment_id}"), 200)
+        self.assert_payment_card_api_controller_data(created_payment_data, get_card_data)
 
-    @pytest.mark.skip("500 error")
     def test_create_new_payment_card_record(self):
-        pass
+        payload = TestDataPaymentCardApiController.base_payment_card_record
 
-    def test_update_payment_card(self):
+        created_payment_response, created_payment_data = self.verify_response_code(
+            requests.post(self.payment_card_endpoint, json=payload), 201)
+        payment_id = created_payment_data["id"]
+
+        get_payment_response, get_payment_data = self.verify_response_code(
+            requests.get(self.payment_card_endpoint, params=f"id={payment_id}"), 200)
+        self.assert_payment_card_api_controller_data(payload, get_payment_data)
+
+        requests.delete(TestPaymentCardAPIController.payment_card_endpoint, params=f"id={payment_id}")
+
+    @pytest.mark.usefixtures("create_test_payment")
+    def test_update_payment_card(self, create_test_payment):
+        created_payment_data, created_payment_id = create_test_payment
         payload = TestDataPaymentCardApiController.update_payment_card_record
 
-        update_card_response, update_card_data = self.verify_response_code(requests.put(self.payment_card_endpoint, params="id=48", json=payload), 200)
+        update_card_response, update_card_data = self.verify_response_code(
+            requests.put(self.payment_card_endpoint, params=f"id={created_payment_id}", json=payload), 200)
         self.assert_payment_card_api_controller_data(payload, update_card_data)
 
-        reverse_change_payload = TestDataPaymentCardApiController.existing_payment_card_record
-        update_back_card_response, update_back_card_data = self.verify_response_code(requests.put(self.payment_card_endpoint, params="id=48", json=reverse_change_payload), 200)
-        self.assert_payment_card_api_controller_data(reverse_change_payload, update_back_card_data)
+    @pytest.mark.usefixtures("create_test_payment")
+    def test_delete_payment_card(self, create_test_payment):
+        created_payment_data, created_payment_id = create_test_payment
 
-    @pytest.mark.skip("There is only 1 record and I can create new")
-    def test_delete_payment_card(self, create_test_user):
-        pass
+        self.verify_response_code(requests.get(self.payment_card_endpoint, params=f"id={created_payment_id}"), 200)
+
+        delete_user_response, delete_user_data = self.verify_response_code(
+            requests.delete(self.payment_card_endpoint, params=f"id={created_payment_id}"), 200)
+        assert delete_user_data["operationName"] == "Delete PaymentCard"
+        assert delete_user_data["statusMessage"] == f"SUCCESS,id= {created_payment_id}"
+
+        self.verify_response_code(requests.get(self.payment_card_endpoint, params=f"id={created_payment_id}"), 404)
 
     def test_get_list_of_all_payment_card(self):
         get_card_list_response, data = self.verify_response_code(requests.get(self.payment_card_list_endpoint), 200)
