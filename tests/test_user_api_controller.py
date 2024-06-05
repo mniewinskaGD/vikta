@@ -35,7 +35,7 @@ class TestUserAPIController(TestBase, TestAssertionHelper):
         payload = TestDataUserAPIController.updated_user_put
 
         update_user_response, data = self.verify_response_code(requests.put(self.user_endpoint, json=payload), 201)
-        assert data == TestDataUserAPIController.base_user_get
+        assert data == TestDataUserAPIController.updated_user_put
 
     @pytest.mark.usefixtures("create_test_user")
     def test_delete_user(self, create_test_user):
@@ -65,12 +65,12 @@ class TestUserAPIController(TestBase, TestAssertionHelper):
 
     def test_get_user_by_search_term(self):
         term = "City%7CTech%7Cservice%7Cadmin%7CTo4ka"
-        user_id = 62
-        _, data_by_surname = self.verify_response_code(requests.get(self.user_search_endpoint, params=f"term={term}"),
+        user_id = 61
+        _, data_by_search_term = self.verify_response_code(requests.get(self.user_search_endpoint, params=f"term={term}"),
                                                             200)
         _, data_by_user_id = self.verify_response_code(requests.get(self.user_endpoint, params=f"id={user_id}"),
                                                             200)
-        assert data_by_surname[0] == data_by_user_id
+        assert data_by_search_term[0] == data_by_user_id
 
     @pytest.mark.usefixtures("create_and_delete_test_user")
     def test_get_user_by_surname(self, create_and_delete_test_user):
