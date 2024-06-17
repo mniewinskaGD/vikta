@@ -13,11 +13,17 @@ class TestUserAPIController(TestBase, TestAssertionHelper):
     user_search_endpoint = user_endpoint + '/search'
     user_surname_endpoint = user_endpoint + '/surname'
 
-    @pytest.mark.usefixtures("create_and_delete_test_user")
-    def test_get_user_record_by_id(self, create_and_delete_test_user):
-        created_user_data, created_user_user_id = create_and_delete_test_user
-        get_user_response, get_user_data = self.verify_response_code(requests.get(self.user_endpoint, params=f"id={created_user_user_id}"), 200)
-        self.assert_user_api_controller_data(created_user_data, get_user_data)
+    @pytest.mark.parametrize("created_user, expected_response_code", [
+        (({},0), 404),
+        pytest.param("fixture", 200, marks=pytest.mark.usefixtures("create_and_delete_test_user"))])
+    def test_get_user_record_by_id(self, created_user, expected_response_code, request):
+        if created_user == "fixture":
+            created_user = request.getfixturevalue("create_and_delete_test_user")
+
+        created_user_data, created_user_user_id = created_user
+        get_user_response, get_user_data = self.verify_response_code(requests.get(self.user_endpoint, params=f"id={created_user_user_id}"), expected_response_code)
+        if expected_response_code == 200:
+            self.assert_user_api_controller_data(created_user_data, get_user_data)
 
     def test_create_new_user(self):
         payload = TestDataUserAPIController.base_user_create

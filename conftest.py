@@ -1,3 +1,4 @@
+import re
 import time
 
 import pytest
@@ -12,9 +13,10 @@ def pytest_addoption(parser):
                      help="Generate HTML report and store it in the specified file")
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='class')
 def docker_fixture(request):
     docker_manager = DockerManager()
+    print(docker_manager)
     docker_manager.start_container()
     yield docker_manager
     if request.config.option.stop_docker_container:
@@ -26,18 +28,21 @@ def pytest_runtest_makereport(item):
     # customize the report
     outcome = yield
     report = outcome.get_result()
-    test_fn = item.obj
 
     params = item.callspec.params if hasattr(item, 'callspec') else {}
     descr_marker = item.get_closest_marker('description')
-    test_title = getattr(test_fn, '__doc__')
-
-    if test_title:
-        report.test_title = test_title
 
     if descr_marker:
         text = descr_marker.kwargs.get('text', '')
         report.test_title = text.format(**params)
+
+@pytest.hookimpl(optionalhook=True)
+def pytest_html_results_table_row(report, cells):
+    for cell in cells:
+        if cell.attr.class_ == 'col-name':
+            if hasattr(report, 'test_title'):
+                cell[0] = report.test_title
+            break
 
 
 @pytest.fixture(scope="session")
