@@ -9,6 +9,7 @@ from general.config import BASE_ENDPOINT
 class TestPageResponse:
     @pytest.mark.smoke
     @pytest.mark.parametrize("retry_count", [3, 5, 8])
+    @pytest.mark.description(text='Verify that the page is responsive in max number of {retry_count} retries')
     def test_page_response(self, retry_count):
         for _ in range(retry_count):
             response = requests.get(BASE_ENDPOINT)

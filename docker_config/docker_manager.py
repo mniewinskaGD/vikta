@@ -22,6 +22,9 @@ class DockerManager:
                 cls._instance.container_name = DOCKER_CONTAINER_NAME
         return cls._instance
 
+    def __str__(self):
+        return f"DockerManager managing container: {self.container_name}"
+
     def start_container(self):
         containers = self.get_containers()
         if containers:
