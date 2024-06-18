@@ -1,23 +1,17 @@
 class TestAssertionHelper:
 
     @staticmethod
+    def assert_data(expected_data, observed_data, keys, data_type):
+        print(f"Compare all fields of {data_type} data")
+        for key in keys:
+            assert expected_data[key] == observed_data[key], f"Mismatch in {key}: expected {expected_data[key]}, got {observed_data[key]}"
+
+    @staticmethod
     def assert_user_api_controller_data(expected_data, observed_data):
-        print("Compare all fields of user API controller data")
-        assert expected_data["email"] == observed_data["email"]
-        assert expected_data["addressIds"] == observed_data["addressIds"]
-        assert expected_data["firstName"] == observed_data["firstName"]
-        assert expected_data["loginName"] == observed_data["loginName"]
-        assert expected_data["middleName"] == observed_data["middleName"]
-        assert expected_data["password"] == observed_data["password"]
-        assert expected_data["paymentCardIds"] == observed_data["paymentCardIds"]
-        assert expected_data["surname"] == observed_data["surname"]
+        user_keys = ["email", "addressIds", "firstName", "loginName", "middleName", "password", "paymentCardIds", "surname"]
+        TestAssertionHelper.assert_data(expected_data, observed_data, user_keys, "user API controller")
 
     @staticmethod
     def assert_payment_card_api_controller_data(expected_data, observed_data):
-        print("Compare all fields of payment card API controller data")
-        assert expected_data["cardNickName"] == observed_data["cardNickName"]
-        assert expected_data["cardNumber"] == observed_data["cardNumber"]
-        assert expected_data["cardCode"] == observed_data["cardCode"]
-        assert expected_data["ownerName"] == observed_data["ownerName"]
-        assert expected_data["expirationDate"] == observed_data["expirationDate"]
-        assert expected_data["userId"] == observed_data["userId"]
+        card_keys = ["cardNickName", "cardNumber", "cardCode", "ownerName", "expirationDate", "userId"]
+        TestAssertionHelper.assert_data(expected_data, observed_data, card_keys, "payment card API controller")

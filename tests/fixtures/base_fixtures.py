@@ -8,10 +8,11 @@ and then subclass it for each specific resource type.
 
 class BaseTestAPIController:
     endpoint = ""
+    payload = {}
 
     @classmethod
-    def create(cls, payload):
-        response = requests.post(cls.endpoint, json=payload)
+    def create(cls):
+        response = requests.post(cls.endpoint, json=cls.payload)
         data = response.json()
         return data, data["id"]
 
@@ -21,7 +22,7 @@ class BaseTestAPIController:
 
 
 def create_and_delete_resource(resource_controller):
-    data, resource_id = resource_controller.create(resource_controller.payload)
+    data, resource_id = resource_controller.create()
     print(f"Create resource\n id:{resource_id}")
     yield data, resource_id
     resource_controller.delete(resource_id)
@@ -29,7 +30,7 @@ def create_and_delete_resource(resource_controller):
 
 
 def create_resource(resource_controller):
-    data, resource_id = resource_controller.create(resource_controller.payload)
+    data, resource_id = resource_controller.create()
     print(f"Create resource\n id:{resource_id}")
     yield data, resource_id
 
