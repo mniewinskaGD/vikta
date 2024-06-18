@@ -15,7 +15,7 @@ class TestUserAPIController(TestBase, TestAssertionHelper):
 
     @pytest.mark.parametrize("created_user, expected_response_code", [
         (({},0), 404),
-        pytest.param("fixture", 200, marks=pytest.mark.usefixtures("create_and_delete_test_user"))])
+         ("fixture", 200)])
     def test_get_user_record_by_id(self, created_user, expected_response_code, request):
         if created_user == "fixture":
             created_user = request.getfixturevalue("create_and_delete_test_user")
@@ -25,16 +25,22 @@ class TestUserAPIController(TestBase, TestAssertionHelper):
         if expected_response_code == 200:
             self.assert_user_api_controller_data(created_user_data, get_user_data)
 
-    def test_create_new_user(self):
-        payload = TestDataUserAPIController.base_user_create
+    @pytest.mark.parametrize("created_user_payload, expected_response_code", [
+        (TestDataUserAPIController.base_user_create, 201),
+        (TestDataUserAPIController.generate_payload(email="a@b"), 201),
+        (TestDataUserAPIController.generate_payload(email="email_without_at.com"), 500),
+        (TestDataUserAPIController.generate_payload(email="a@"), 500)])
+    def test_create_new_user(self, created_user_payload, expected_response_code):
+        created_user_response, created_user_data = self.verify_response_code(requests.post(self.user_endpoint,
+                                                                                           json=created_user_payload),
+                                                                             expected_response_code)
+        if expected_response_code == 201:
+            user_id = created_user_data["id"]
 
-        created_user_response, created_user_data = self.verify_response_code(requests.post(self.user_endpoint, json=payload), 201)
-        user_id = created_user_data["id"]
+            get_user_response, get_user_data = self.verify_response_code(requests.get(self.user_endpoint, params=f"id={user_id}"), 200)
+            self.assert_user_api_controller_data(created_user_payload, get_user_data)
 
-        get_user_response, get_user_data = self.verify_response_code(requests.get(self.user_endpoint, params=f"id={user_id}"), 200)
-        self.assert_user_api_controller_data(payload, get_user_data)
-
-        requests.delete(TestUserAPIController.user_endpoint, params=f"id={user_id}")
+            requests.delete(TestUserAPIController.user_endpoint, params=f"id={user_id}")
 
     @pytest.mark.skip("500 error")
     def test_update_user(self):

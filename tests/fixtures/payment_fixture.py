@@ -4,16 +4,9 @@ from tests.test_data.test_data_payment_card_api_controller import TestDataPaymen
 from tests.test_payment_card_api_controller import TestPaymentCardAPIController
 
 
-class TestUserAPIControllerFixture(BaseTestAPIController):
+class TestPaymentCardAPIControllerFixture(BaseTestAPIController):
     endpoint = TestPaymentCardAPIController.payment_card_endpoint
     payload = TestDataPaymentCardApiController.base_payment_card_record
 
 
-@pytest.fixture
-def create_and_delete_test_payment():
-    yield from create_and_delete_resource(TestUserAPIControllerFixture)
 
-
-@pytest.fixture
-def create_test_payment():
-    yield from create_resource(TestUserAPIControllerFixture)

@@ -1,7 +1,10 @@
 import uuid
+import copy
+
+from tests.test_data.base_test_data import BaseTestData
 
 
-class TestDataUserAPIController:
+class TestDataUserAPIController(BaseTestData):
     base_user_create = {
         "addressIds": [],
         "email": f"email_{uuid.uuid4().hex}@a.com",
