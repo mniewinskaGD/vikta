@@ -12,5 +12,8 @@ class TestBase:
         print(f"Response status code: {response.status_code}")
         print(f"Expected status code: {expected_code}")
         assert response.status_code == expected_code
-        data = response.json()
+        if expected_code == 500:
+            data = {}
+        else:
+            data = response.json()
         return response, data
