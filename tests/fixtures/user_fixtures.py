@@ -9,11 +9,4 @@ class TestUserAPIControllerFixture(BaseTestAPIController):
     payload = TestDataUserAPIController.base_user_create
 
 
-@pytest.fixture
-def create_and_delete_test_user():
-    yield from create_and_delete_resource(TestUserAPIControllerFixture)
 
-
-@pytest.fixture
-def create_test_user():
-    yield from create_resource(TestUserAPIControllerFixture)
