@@ -6,7 +6,7 @@ from tests.test_user_api_controller import TestUserAPIController
 
 class TestUserAPIControllerFixture(BaseTestAPIController):
     endpoint = TestUserAPIController.user_endpoint
-    payload = TestDataUserAPIController.base_user_create
+    payload = TestDataUserAPIController.base_payload
 
 
 

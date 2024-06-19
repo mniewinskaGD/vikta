@@ -3,12 +3,14 @@ import random
 from datetime import datetime, timezone
 from random_word import RandomWords
 
+from tests.test_data.base_test_data import BaseTestData
 
-class TestDataImageItemApiController:
+
+class TestDataImageItemApiController(BaseTestData):
     current_datetime = datetime.now(timezone.utc).strftime('%Y-%m-%d')
     randomization_str = str(uuid.uuid4()).replace("-", "")
 
-    base_image_item = {
+    base_payload = {
         "id": 0,
         "pathToImage": "https://miro.medium.com/max/812/1*jGgFf4dW7arnJocOKVN3Mw.jpeg",
         "title": f"{randomization_str[:10]}",

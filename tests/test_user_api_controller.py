@@ -14,8 +14,8 @@ class TestUserAPIController(TestBase, TestAssertionHelper):
     user_surname_endpoint = user_endpoint + '/surname'
 
     @pytest.mark.parametrize("created_user, expected_response_code", [
-        (({},0), 404),
-         ("fixture", 200)])
+        (({}, 0), 404),
+        ("fixture", 200)])
     def test_get_user_record_by_id(self, created_user, expected_response_code, request):
         if created_user == "fixture":
             created_user = request.getfixturevalue("create_and_delete_test_user")
@@ -26,7 +26,7 @@ class TestUserAPIController(TestBase, TestAssertionHelper):
             self.assert_user_api_controller_data(created_user_data, get_user_data)
 
     @pytest.mark.parametrize("created_user_payload, expected_response_code", [
-        (TestDataUserAPIController.base_user_create, 201),
+        (TestDataUserAPIController.base_payload, 201),
         (TestDataUserAPIController.generate_payload(email="a@b"), 201),
         (TestDataUserAPIController.generate_payload(email="email_without_at.com"), 500),
         (TestDataUserAPIController.generate_payload(email="a@"), 500)])
@@ -43,11 +43,15 @@ class TestUserAPIController(TestBase, TestAssertionHelper):
             requests.delete(TestUserAPIController.user_endpoint, params=f"id={user_id}")
 
     @pytest.mark.skip("500 error")
-    def test_update_user(self):
-        payload = TestDataUserAPIController.updated_user_put
+    @pytest.mark.usefixtures("create_and_delete_test_user")
+    def test_update_user(self, create_and_delete_test_user):
+        created_user_data, created_user_user_id = create_and_delete_test_user
+        updated_payload = TestDataUserAPIController.generate_payload(id=created_user_user_id, loginName=created_user_data["loginName"])
 
-        update_user_response, data = self.verify_response_code(requests.put(self.user_endpoint, json=payload), 201)
-        assert data == TestDataUserAPIController.updated_user_put
+        update_user_response, data = self.verify_response_code(requests.put(self.user_endpoint, json=updated_payload), 201)
+        assert data == updated_payload
+        assert created_user_user_id == data["id"]
+        assert created_user_data["loginName"] == data["loginName"]
 
     @pytest.mark.usefixtures("create_test_user")
     def test_delete_user(self, create_test_user):
