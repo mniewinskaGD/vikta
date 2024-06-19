@@ -19,7 +19,7 @@ class TestPaymentCardAPIController(TestBase, TestAssertionHelper):
         self.assert_payment_card_api_controller_data(created_payment_data, get_card_data)
 
     def test_create_new_payment_card_record(self):
-        payload = TestDataPaymentCardApiController.base_payment_card_record
+        payload = TestDataPaymentCardApiController.base_payload
 
         created_payment_response, created_payment_data = self.verify_response_code(
             requests.post(self.payment_card_endpoint, json=payload), 201)
@@ -34,7 +34,7 @@ class TestPaymentCardAPIController(TestBase, TestAssertionHelper):
     @pytest.mark.usefixtures("create_test_payment")
     def test_update_payment_card(self, create_test_payment):
         created_payment_data, created_payment_id = create_test_payment
-        payload = TestDataPaymentCardApiController.update_payment_card_record
+        payload = TestDataPaymentCardApiController.generate_payload(id=created_payment_id)
 
         update_card_response, update_card_data = self.verify_response_code(
             requests.put(self.payment_card_endpoint, params=f"id={created_payment_id}", json=payload), 200)

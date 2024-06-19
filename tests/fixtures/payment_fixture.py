@@ -6,7 +6,7 @@ from tests.test_payment_card_api_controller import TestPaymentCardAPIController
 
 class TestPaymentCardAPIControllerFixture(BaseTestAPIController):
     endpoint = TestPaymentCardAPIController.payment_card_endpoint
-    payload = TestDataPaymentCardApiController.base_payment_card_record
+    payload = TestDataPaymentCardApiController.base_payload
 
 
 
